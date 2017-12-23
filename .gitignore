@@ -1,0 +1,7 @@
+/main/qt/moc*
+/main/qt/rcc*
+/main/deploy
+/main/linux
+
+.idea/workspace.xml
+.idea/tasks.xml
