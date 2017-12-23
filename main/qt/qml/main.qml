@@ -4,42 +4,47 @@ import QtQuick.Window 2.0
 
 ApplicationWindow {
     id: window
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
+    property bool locked: false
+    flags:   Qt.WindowStaysOnTopHint | (locked ? Qt.FramelessWindowHint : Qt.Window)
     visible: true
     title: "Flyrics"
-    minimumWidth: 400
-    minimumHeight: 800
+    width: 300
+    height: 400
+    color: "#00000000"
 
-    color: mouseArea.containsMouse ? "#ffcccccc" : "#00000000"
-
-
-    MouseArea {
-        id: mouseArea
-        hoverEnabled: true
+    ListView {
         anchors.fill: parent
+        interactive: false
+        delegate: Text {
+            width: parent.width
+            text: linetext
+            font.pixelSize: 30
+            font.family: "Helvetica"
+            font.bold: true
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
+            style: Text.Outline
+            styleColor: "black"
+            color: ListView.isCurrentItem ? "white": "lightgrey"
+        }
+        currentIndex: status.activeLine
+        preferredHighlightBegin: window.height / 2 - 15
+        preferredHighlightEnd: window.height / 2 + 15
+        highlightRangeMode: ListView.ApplyRange
+        //highlightMoveVelocity: 10
+        model: LineModel
 
-        ListView {
+
+
+        MouseArea {
+            id: mouseArea
             anchors.fill: parent
-            delegate: Text {
-                width: parent.width
-                text: linetext
-                font.pixelSize: 30
-                font.family: "Helvetica"
-                font.bold: ListView.isCurrentItem
-                wrapMode: Text.WordWrap
-                horizontalAlignment: Text.AlignHCenter
-                style: Text.Outline
-                styleColor: "black"
-                color: ListView.isCurrentItem ? "lightgrey" : "white"
+            acceptedButtons: Qt.MiddleButton
+            onPressed: {
+                locked = !locked
             }
-            currentIndex: status.activeLine
-            preferredHighlightBegin: window.height / 2 - 15
-            preferredHighlightEnd: window.height / 2 + 15
-            highlightRangeMode: ListView.ApplyRange
-            model: LineModel
+
         }
     }
-
-
 
 }
