@@ -4,7 +4,7 @@ import (
 	"github.com/benaan/flyrics/src/model"
 )
 
-var EmptyLyrics = model.Lyrics{Lines: map[int]string{}}
+var EmptyLyrics = &model.Lyrics{Lines: map[int]string{}}
 
 type LyricProvider interface {
 	GetLyrics(song *model.Song) (*model.Lyrics, error)

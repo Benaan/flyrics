@@ -24,22 +24,22 @@ func (controller *Controller) Run() {
 	for {
 		select {
 		case metadata := <-controller.MetadataInput:
-			controller.handleMetadataChange(metadata)
+			controller.handleMetadataChange(&metadata)
 		case lrc := <-controller.LyricInput:
-			controller.handleLyricChange(lrc)
+			controller.handleLyricChange(&lrc)
 		case <-controller.Stop:
 			return
 		}
 	}
 }
 
-func (controller *Controller) handleLyricChange(lyrics model.Lyrics) {
-	controller.State.SetLyrics(&lyrics)
+func (controller *Controller) handleLyricChange(lyrics *model.Lyrics) {
+	controller.State.SetLyrics(lyrics)
 	controller.View.SetLyrics(lyrics.Lines)
 	controller.View.SetActiveLine(controller.State.GetActiveLine())
 }
 
-func (controller *Controller) handleMetadataChange(metadata model.Metadata) {
+func (controller *Controller) handleMetadataChange(metadata *model.Metadata) {
 	if controller.State.GetSong() == nil || *controller.State.GetSong() != *metadata.Song {
 		controller.State.SetSong(metadata.Song)
 		controller.handleLyricChange(lyrics.EmptyLyrics)
