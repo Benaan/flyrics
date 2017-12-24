@@ -1,14 +1,21 @@
 package controller
 
 import (
+	"reflect"
 	"testing"
 	"time"
 
+	"github.com/benaan/flyrics/src/lyrics"
 	"github.com/benaan/flyrics/src/model"
 	"github.com/benaan/flyrics/src/state"
 )
 
 var song = &model.Song{"artist", "album", "title"}
+var lyricsObj = &model.Lyrics{Lines: model.Lines{
+	0:   "Line 1",
+	100: "Line 2",
+	200: "Line 3",
+}}
 var controller *Controller
 var lyricInput chan model.Lyrics
 var lyricManager *lyricManagerMock
@@ -35,25 +42,9 @@ func setup() {
 	go controller.Run()
 }
 
-//func TestStartsMetadataListener(t *testing.T) {
-//	setup()
-//	stop <- true
-//
-//	time.Sleep(time.Millisecond)
-//	mutex.Lock()
-//	if metadataManagerInstance.listenCallCount != 1 {
-//		t.Errorf("MetadataManager should have started once, but Listen() was called: %d times", metadataManagerInstance.listenCallCount)
-//	}
-//	mutex.Unlock()
-//}
-
 func TestViewIsUpdated(t *testing.T) {
 	setup()
-	lyricManager.lyrics = &model.Lyrics{Lines: model.Lines{
-		0:   "Line 1",
-		100: "Line 2",
-		200: "Line 3",
-	}}
+	lyricManager.lyrics = lyricsObj
 
 	metadataInput <- model.Metadata{
 		Status: model.PLAYING,
@@ -74,11 +65,7 @@ func TestViewIsUpdated(t *testing.T) {
 
 func TestWhenSongIsNotChangedLyricsAreNotFetched(t *testing.T) {
 	setup()
-	lyricManager.lyrics = &model.Lyrics{Lines: model.Lines{
-		0:   "Line 1",
-		100: "Line 2",
-		200: "Line 3",
-	}}
+	lyricManager.lyrics = lyricsObj
 
 	metadataInput <- model.Metadata{
 		Status: model.PLAYING,
@@ -110,11 +97,7 @@ func TestWhenSongIsNotChangedLyricsAreNotFetched(t *testing.T) {
 
 func TestWhenSongIsChangedThenLyricsAreFetched(t *testing.T) {
 	setup()
-	lyricManager.lyrics = &model.Lyrics{Lines: model.Lines{
-		0:   "Line 1",
-		100: "Line 2",
-		200: "Line 3",
-	}}
+	lyricManager.lyrics = lyricsObj
 
 	metadataInput <- model.Metadata{
 		Status: model.PLAYING,
@@ -131,5 +114,28 @@ func TestWhenSongIsChangedThenLyricsAreFetched(t *testing.T) {
 
 	if lyricManager.count != 2 {
 		t.Errorf("Expected GetLyrics to be called 2 time, but called %d times", lyricManager.count)
+	}
+}
+
+func TestLyricsAreChangedOnSongchange(t *testing.T) {
+	setup()
+	lyricManager.lyrics = lyricsObj
+	metadataInput <- model.Metadata{
+		Status: model.PLAYING,
+		Song:   song,
+	}
+	time.Sleep(time.Millisecond)
+	if !reflect.DeepEqual(viewObj.lines, lyricsObj.Lines) {
+		t.Errorf("Lyrics should be presented, expected %s, received %s", lyricsObj.Lines, viewObj.lines)
+	}
+
+	lyricManager.lyrics = nil
+	metadataInput <- model.Metadata{
+		Status: model.PLAYING,
+		Song:   &model.Song{Title: "Song2"},
+	}
+	time.Sleep(time.Millisecond)
+	if !reflect.DeepEqual(viewObj.lines, lyrics.EmptyLyrics.Lines) {
+		t.Errorf("Lyrics should be cleared on song change, expected %s, received %s", lyrics.EmptyLyrics.Lines, viewObj.lines)
 	}
 }

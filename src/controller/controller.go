@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/benaan/flyrics/src/lyrics"
 	"github.com/benaan/flyrics/src/model"
 	"github.com/benaan/flyrics/src/state"
 	"github.com/benaan/flyrics/src/view"
@@ -24,8 +25,8 @@ func (controller *Controller) Run() {
 		select {
 		case metadata := <-controller.MetadataInput:
 			controller.handleMetadataChange(metadata)
-		case lyrics := <-controller.LyricInput:
-			controller.handleLyricChange(lyrics)
+		case lrc := <-controller.LyricInput:
+			controller.handleLyricChange(lrc)
 		case <-controller.Stop:
 			return
 		}
@@ -41,6 +42,7 @@ func (controller *Controller) handleLyricChange(lyrics model.Lyrics) {
 func (controller *Controller) handleMetadataChange(metadata model.Metadata) {
 	if controller.State.GetSong() == nil || *controller.State.GetSong() != *metadata.Song {
 		controller.State.SetSong(metadata.Song)
+		controller.handleLyricChange(lyrics.EmptyLyrics)
 		go controller.LyricManager.GetLyrics(metadata.Song, controller.LyricInput)
 	}
 	controller.State.SetStatus(metadata.Status)

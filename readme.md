@@ -1,4 +1,4 @@
-#Flyrics
+# Flyrics
 
 ## Running
 To run the application:
