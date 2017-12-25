@@ -7,15 +7,16 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/benaan/flyrics/src/config"
 	"github.com/benaan/flyrics/src/model"
 )
 
 type FileLister struct {
-	Directory string
+	Config config.Reader
 }
 
 func (lister *FileLister) GetAllFiles() ([]string, error) {
-	return filepath.Glob(lister.Directory + "*.lrc")
+	return filepath.Glob(lister.Config.GetStringConfig(config.LyricDirectory) + "*.lrc")
 }
 
 type FileOpener struct {
@@ -26,11 +27,11 @@ func (*FileOpener) Open(path string) (io.ReadCloser, error) {
 }
 
 type LyricWriter struct {
-	Directory string
+	Config config.Reader
 }
 
 func (w *LyricWriter) Write(song *model.Song, file io.Reader) error {
-	path := w.Directory + song.GetFileName()
+	path := w.Config.GetStringConfig(config.LyricDirectory) + song.GetFileName()
 	if _, err := os.Stat(path); err == nil {
 		return errors.New("The file already exists")
 	}

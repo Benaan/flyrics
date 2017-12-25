@@ -9,20 +9,19 @@ import (
 )
 
 func CreateLyricProviders() []lyrics.LyricProvider {
-	lyricDirectory := "/home/gertjan/Music/lyrics/"
 	return []lyrics.LyricProvider{
 		&local.Provider{
 			FileReader: &FileOpener{},
-			FileLister: &FileLister{lyricDirectory},
+			FileLister: &FileLister{Config},
 		},
-		&viewlyrics.ViewLyrics{Writer: &LyricWriter{lyricDirectory}},
+		&viewlyrics.ViewLyrics{Writer: &LyricWriter{Config}},
 	}
 }
 
 func CreateMetadataListeners() []metadata.Listener {
 	return []metadata.Listener{
 		&googleplaymusicdesktopplayer.Reader{
-			Path:   "/home/gertjan/.config/Google Play Music Desktop Player/json_store/playback.json",
+			Config: Config,
 			Opener: &FileOpener{},
 		},
 	}

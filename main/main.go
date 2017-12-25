@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	application.Run(&qt.View{})
+	application.Run(&qt.View{Config: application.Config})
 }

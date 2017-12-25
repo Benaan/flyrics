@@ -1,17 +1,18 @@
 package googleplaymusicdesktopplayer
 
 import (
+	"github.com/benaan/flyrics/src/config"
 	"github.com/benaan/flyrics/src/model"
 	"github.com/benaan/flyrics/src/util"
 )
 
 type Reader struct {
-	Path   string
+	Config config.Reader
 	Opener util.FileOpener
 }
 
-func (listener *Reader) GetMetadata() (*model.Metadata, error) {
-	file, err := listener.Opener.Open(listener.Path)
+func (l *Reader) GetMetadata() (*model.Metadata, error) {
+	file, err := l.Opener.Open(l.Config.GetStringConfig(config.GpmdpPath))
 	if err != nil {
 		return nil, err
 	}

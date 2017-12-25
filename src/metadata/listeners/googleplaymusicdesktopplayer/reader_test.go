@@ -30,9 +30,16 @@ func (closer *closerSpy) Close() error {
 	return nil
 }
 
+type confMock struct {
+}
+
+func (confMock) GetStringConfig(key string) string {
+	return ""
+}
+
 func TestReadErrorIsHandled(t *testing.T) {
 	opener := &openerMock{error: fakeError}
-	reader := Reader{Opener: opener}
+	reader := Reader{Config: &confMock{}, Opener: opener}
 	_, err := reader.GetMetadata()
 	if err != fakeError {
 		t.Error("Expected a fake error, received:", err)
@@ -43,7 +50,7 @@ func TestFileIsClosed(t *testing.T) {
 	spy := &closerSpy{Reader: strings.NewReader("")}
 	opener := &openerMock{reader: spy}
 
-	reader := Reader{Opener: opener}
+	reader := Reader{Config: &confMock{}, Opener: opener}
 	reader.GetMetadata()
 
 	if !spy.closed {
@@ -51,12 +58,19 @@ func TestFileIsClosed(t *testing.T) {
 	}
 }
 
+type configMock struct {
+}
+
+func (*configMock) GetStringConfig(key string) string {
+	return "/path/to/file"
+}
+
 func TestReadsFileInPath(t *testing.T) {
 	spy := &closerSpy{Reader: strings.NewReader("")}
 	opener := &openerMock{reader: spy}
 
 	reader := Reader{
-		Path:   "/path/to/file",
+		Config: &configMock{},
 		Opener: opener,
 	}
 	reader.GetMetadata()
