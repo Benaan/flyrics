@@ -18,11 +18,13 @@ type View struct {
 }
 
 func (view *View) SetLyrics(lines model.Lines) {
-	view.model.clearLines()
-	for _, key := range getSortedKeys(lines) {
-		qtLine := NewLine(nil)
-		qtLine.SetLinetext(lines[key])
-		view.model.AddLine(qtLine)
+	if view.model != nil {
+		view.model.clearLines()
+		for _, key := range getSortedKeys(lines) {
+			qtLine := NewLine(nil)
+			qtLine.SetLinetext(lines[key])
+			view.model.AddLine(qtLine)
+		}
 	}
 }
 
