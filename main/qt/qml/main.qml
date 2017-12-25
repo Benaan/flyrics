@@ -10,7 +10,7 @@ ApplicationWindow {
     title: "Flyrics"
     width: 300
     height: 400
-    color: locked? "transparent" : "white"
+    color: locked ? "transparent" : "white"
 
     menuBar: MenuBar {
         __contentItem.scale: locked ? 0 : 1
@@ -19,6 +19,10 @@ ApplicationWindow {
             title: "File"
             MenuItem {
                 text: "Search"
+                onTriggered: {
+                    var component = Qt.createComponent("search.qml");
+                    component.createObject(mainWindow).show();
+                }
             }
             MenuItem {
                 text: "Options"

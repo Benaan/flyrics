@@ -1,6 +1,7 @@
 package qt
 
 import (
+	"fmt"
 	"os"
 	"sort"
 
@@ -25,6 +26,31 @@ type Status struct {
 	_ int    `property:"activeLine"`
 	_ string `property:"lyricDirectory"`
 	_ string `property:"gpmdpPath"`
+}
+
+type Search struct {
+	core.QObject
+
+	_ *LyricListModel `property:"lyricList"`
+
+	_ func() `constructor:"init"`
+
+	_ func(artist, album, title string) `slot:"searchLyrics"`
+}
+
+func (s *Search) init() {
+	list := NewLyricListModel(nil)
+	for i := 0; i < 2; i++ {
+
+		lrc := NewLyric(nil)
+		lrc.SetAlbum(fmt.Sprintf("album %d", i))
+		lrc.SetTitle(fmt.Sprintf("title %d", i))
+		lrc.SetArtist(fmt.Sprintf("artist %d", i))
+		lrc.SetDownloads(i)
+		lrc.SetRating(fmt.Sprintf("%d", i))
+		list.AddLyric(lrc)
+	}
+	s.SetLyricList(list)
 }
 
 func (v *View) SetLyrics(lines model.Lines) {
@@ -55,6 +81,23 @@ func (v *View) Present() {
 
 	v.status = NewStatus(nil)
 	v.listenToConfigChanges()
+
+	search := NewSearch(nil)
+	search.ConnectSearchLyrics(func(artist, album, title string) {
+		list := NewLyricListModel(nil)
+		for i := 0; i < 10; i++ {
+
+			lrc := NewLyric(nil)
+			lrc.SetAlbum(fmt.Sprintf("album %d %s", i, album))
+			lrc.SetTitle(fmt.Sprintf("title %d %s", i, title))
+			lrc.SetArtist(fmt.Sprintf("artist %d %s", i, artist))
+			lrc.SetDownloads(i)
+			lrc.SetRating(fmt.Sprintf("%d", i))
+			list.AddLyric(lrc)
+		}
+		search.SetLyricList(list)
+	})
+	app.RootContext().SetContextProperty("search", search)
 	app.RootContext().SetContextProperty("status", v.status)
 
 	app.Load(core.NewQUrl3("qrc:/qml/main.qml", 0))
