@@ -1,12 +1,21 @@
 package controller
 
 import (
+	"github.com/benaan/flyrics/src/lyrics"
 	"github.com/benaan/flyrics/src/model"
 )
 
 type viewSpy struct {
 	activeLine int
 	lines      model.Lines
+}
+
+func (spy *viewSpy) SetSong(song *model.Song) {
+
+}
+
+func (spy *viewSpy) SetLyricManager(manager lyrics.LyricsManager) {
+	panic("implement me")
 }
 
 func (spy *viewSpy) Present() {
@@ -26,9 +35,17 @@ type lyricManagerMock struct {
 	lyrics *model.Lyrics
 }
 
-func (manager *lyricManagerMock) GetLyrics(song *model.Song, output chan model.Lyrics) {
+func (manager *lyricManagerMock) Select(*lyrics.File) {
+	panic("implement me")
+}
+
+func (manager *lyricManagerMock) GetList(song *model.Song) (list []*lyrics.File) {
+	panic("implement me")
+}
+
+func (manager *lyricManagerMock) GetLyrics(song *model.Song) {
 	manager.count++
 	if manager.lyrics != nil {
-		output <- *manager.lyrics
+		manager.output <- *manager.lyrics
 	}
 }

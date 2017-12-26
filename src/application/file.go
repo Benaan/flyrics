@@ -1,7 +1,6 @@
 package application
 
 import (
-	"errors"
 	"io"
 	"io/ioutil"
 	"os"
@@ -32,9 +31,6 @@ type LyricWriter struct {
 
 func (w *LyricWriter) Write(song *model.Song, file io.Reader) error {
 	path := w.Config.GetStringConfig(config.LyricDirectory) + song.GetFileName()
-	if _, err := os.Stat(path); err == nil {
-		return errors.New("The file already exists")
-	}
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		return err

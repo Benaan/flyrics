@@ -19,6 +19,7 @@ type LyricListModel struct {
 	_ []*Lyric                 `property:"lyrics"`
 
 	_ func(*Lyric) `slot:"addLyric"`
+	_ func()       `slot:"clear"`
 }
 
 type Lyric struct {
@@ -52,6 +53,7 @@ func (m *LyricListModel) init() {
 	m.ConnectRoleNames(m.roleNames)
 
 	m.ConnectAddLyric(m.addLyric)
+	m.ConnectClear(m.clear)
 
 }
 
@@ -114,4 +116,10 @@ func (m *LyricListModel) columnCount(parent *core.QModelIndex) int {
 
 func (m *LyricListModel) roleNames() map[int]*core.QByteArray {
 	return m.Roles()
+}
+
+func (m *LyricListModel) clear() {
+	m.BeginResetModel()
+	m.SetLyrics([]*Lyric{})
+	m.EndResetModel()
 }

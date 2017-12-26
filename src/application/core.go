@@ -17,8 +17,10 @@ func Run(view view.LyricView) {
 	metadataChannel := make(chan model.Metadata)
 
 	lyricManager := &lyrics.Manager{
+		Output:    lyricChannel,
 		Providers: CreateLyricProviders(),
 	}
+	view.SetLyricManager(lyricManager)
 
 	metadataManager := &metadata.Manager{
 		Delay:     1000 * time.Millisecond,

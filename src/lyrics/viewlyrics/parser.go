@@ -8,6 +8,7 @@ type File struct {
 	Title     string `xml:"title,attr"`
 	Album     string `xml:"album,attr"`
 	Downloads int    `xml:"downloads,attr"`
+	Rating    string `xml:"rating,attr"`
 }
 
 type FileList struct {

@@ -7,8 +7,8 @@ ApplicationWindow{
     id: searchWindow
 
     title: "Options"
-    minimumWidth: 500
-    minimumHeight: 300
+    minimumWidth: 800
+    minimumHeight: 400
     flags: Qt.SubWindow
     toolBar: ToolBar {
         RowLayout {
@@ -19,26 +19,31 @@ ApplicationWindow{
             TextField {
                 id: artistInput
                 height: searchButton.height
+                width: searchWindow.width/4
                 placeholderText: "Artist"
+                text: status.currentSong.artist
             }
 
              TextField {
                 id: albumInput
                 height: searchButton.height
+                width: searchWindow.width/4
                 placeholderText: "Album"
+                text: status.currentSong.album
             }
 
             TextField {
                 id: titleInput
                 height: searchButton.height
+                width: searchWindow.width/4
                 placeholderText: "Title"
+                text: status.currentSong.title
             }
-
             Button  {
                 id: searchButton
                 text: "Search"
                 onClicked: {
-                   search.searchLyrics(artistInput.text, albumInput.text, titleInput.text)
+                    search.searchLyrics(artistInput.text, albumInput.text, titleInput.text)
                 }
             }
         }
@@ -51,6 +56,9 @@ ApplicationWindow{
         frameVisible: false
         sortIndicatorVisible: true
         model: search.lyricList
+        onDoubleClicked: {
+            search.select(resultView.currentRow)
+        }
 
         TableViewColumn {
             role: "artist"

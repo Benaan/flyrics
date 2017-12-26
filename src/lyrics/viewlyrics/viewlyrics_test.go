@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetFileList(t *testing.T) {
-	list, err := getFileList(bytes.NewReader(input))
+	list, err := getFileListFromResponse(bytes.NewReader(input))
 	if err != nil {
 		t.Errorf("Didnt expect an error, received: %s", err)
 	}
@@ -31,7 +31,7 @@ func TestGetFileList(t *testing.T) {
 //	response, _ := sendRequest(createRequest(song))
 //
 //	defer response.Close()
-//	files, _ := getFileList(response)
+//	files, _ := getFileListFromResponse(response)
 //	for _, file := range files {
 //		t.Errorf("Artist: %s Title: %s\n", file.Artist, file.Title)
 //	}

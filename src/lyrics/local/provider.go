@@ -3,6 +3,7 @@ package local
 import (
 	"errors"
 
+	"github.com/benaan/flyrics/src/lyrics"
 	"github.com/benaan/flyrics/src/lyrics/local/filematcher"
 	"github.com/benaan/flyrics/src/lyrics/local/filematcher/factory"
 	"github.com/benaan/flyrics/src/lyrics/parser"
@@ -19,8 +20,27 @@ type Provider struct {
 	FileLister FileLister
 }
 
-func (provider *Provider) GetLyrics(song *model.Song) (*model.Lyrics, error) {
-	files, err := provider.FileLister.GetAllFiles()
+func (p *Provider) GetLyrics(song *model.Song) (*model.Lyrics, error) {
+	matches, err := p.getMatchingFileList(song)
+	if err != nil {
+		return nil, err
+	}
+	bestMatch, err := filematcher.GetBestMatch(matches)
+	return p.getLyricsFromFile(bestMatch)
+}
+
+func (p *Provider) getLyricsFromFile(path string) (*model.Lyrics, error) {
+	file, err := p.FileReader.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	return parser.ParseLyrics(file)
+}
+
+func (p *Provider) getMatchingFileList(song *model.Song) ([]*filematcher.Match, error) {
+	files, err := p.FileLister.GetAllFiles()
 	if err != nil {
 		return nil, err
 	}
@@ -29,17 +49,25 @@ func (provider *Provider) GetLyrics(song *model.Song) (*model.Lyrics, error) {
 	}
 
 	finder := lyricFinder{Matchers: factory.CreateMatchers()}
-	matches, err := finder.find(song, files)
-	if err != nil {
-		return nil, err
-	}
-	bestMatch, err := filematcher.GetBestMatch(matches)
+	return finder.find(song, files)
+}
 
-	file, err := provider.FileReader.Open(bestMatch)
+func (p *Provider) GetList(song *model.Song) (list []*lyrics.File) {
+	matches, err := p.getMatchingFileList(song)
 	if err != nil {
-		return nil, err
+		return
 	}
-	defer file.Close()
+	for _, match := range matches {
+		list = append(list, &lyrics.File{
+			Song: &model.Song{
+				Title: match.Path,
+			},
+			Source: "Local",
+			Get: func() (*model.Lyrics, error) {
+				return p.getLyricsFromFile(match.Path)
+			},
+		})
+	}
 
-	return parser.ParseLyrics(file)
+	return
 }

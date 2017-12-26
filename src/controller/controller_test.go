@@ -28,7 +28,7 @@ func setup() {
 	stop = make(chan bool)
 	lyricInput = make(chan model.Lyrics)
 	metadataInput = make(chan model.Metadata)
-	lyricManager = &lyricManagerMock{}
+	lyricManager = &lyricManagerMock{output: lyricInput}
 	stateObj = &state.State{}
 	viewObj = &viewSpy{}
 	controller = &Controller{

@@ -3,6 +3,7 @@ package viewlyrics
 import (
 	"io"
 
+	"github.com/benaan/flyrics/src/lyrics"
 	"github.com/benaan/flyrics/src/lyrics/parser"
 	"github.com/benaan/flyrics/src/model"
 	"github.com/benaan/flyrics/src/util"
@@ -13,13 +14,7 @@ type ViewLyrics struct {
 }
 
 func (vl *ViewLyrics) GetLyrics(song *model.Song) (*model.Lyrics, error) {
-	response, err := sendRequest(createRequest(song))
-	if err != nil {
-		return nil, err
-	}
-	defer response.Close()
-
-	files, err := getFileList(response)
+	files, err := getFileList(song)
 	if err != nil {
 		return nil, err
 	}
@@ -29,23 +24,63 @@ func (vl *ViewLyrics) GetLyrics(song *model.Song) (*model.Lyrics, error) {
 		return nil, err
 	}
 
+	return vl.getLyricsFromUrl(url, song)
+
+}
+
+func getFileList(song *model.Song) ([]*File, error) {
+	response, err := sendRequest(createRequest(song))
+	if err != nil {
+		return nil, err
+	}
+	defer response.Close()
+
+	return getFileListFromResponse(response)
+}
+
+func (vl *ViewLyrics) GetList(song *model.Song) []*lyrics.File {
+	var list []*lyrics.File
+
+	files, err := getFileList(song)
+	if err != nil {
+		return list
+	}
+
+	for _, file := range files {
+		list = append(list, &lyrics.File{
+			Song: &model.Song{
+				Artist: file.Artist,
+				Album:  file.Album,
+				Title:  file.Title,
+			},
+			Downloads: file.Downloads,
+			Rating:    file.Rating,
+			Source:    "ViewLyrics",
+			Get: func() (*model.Lyrics, error) {
+				return vl.getLyricsFromUrl(file.Link, song)
+			},
+		})
+	}
+
+	return list
+}
+
+func (vl *ViewLyrics) getLyricsFromUrl(url string, song *model.Song) (*model.Lyrics, error) {
 	file, err := getFile(url)
 	defer file.Close()
 	if err != nil {
 		return nil, err
 	}
-	lyrics, err := parser.ParseLyrics(file)
+	lrcs, err := parser.ParseLyrics(file)
 	if err != nil {
 		return nil, err
 	}
 
 	vl.Writer.Write(song, file)
-
-	return lyrics, nil
-
+	return lrcs, nil
 }
 
-func getFileList(input io.Reader) ([]*File, error) {
+func getFileListFromResponse(input io.Reader) ([]*File, error) {
 	decoded, err := decode(input)
 	if err != nil {
 		return nil, err

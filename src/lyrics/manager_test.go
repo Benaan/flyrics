@@ -12,6 +12,14 @@ type FakeLyricProvider struct {
 	error  error
 }
 
+func (provider *FakeLyricProvider) GetList(song *model.Song) []*File {
+	panic("implement me")
+}
+
+func (provider *FakeLyricProvider) GetLyricList(song *model.Song) []*File {
+	return nil
+}
+
 func (provider *FakeLyricProvider) GetLyrics(song *model.Song) (*model.Lyrics, error) {
 	return provider.lyrics, provider.error
 }
@@ -24,9 +32,10 @@ func TestGetLyrics(t *testing.T) {
 	output := make(chan model.Lyrics)
 
 	manager := Manager{
-		Providers: []LyricProvider{provider},
+		Providers: []Provider{provider},
+		Output:    output,
 	}
-	go manager.GetLyrics(song, output)
+	go manager.GetLyrics(song)
 
 	if result := <-output; !reflect.DeepEqual(result, *lyrics) {
 		t.Errorf("Expected fake lyrics, received %s", result)

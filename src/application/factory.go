@@ -8,8 +8,8 @@ import (
 	"github.com/benaan/flyrics/src/metadata/listeners/googleplaymusicdesktopplayer"
 )
 
-func CreateLyricProviders() []lyrics.LyricProvider {
-	return []lyrics.LyricProvider{
+func CreateLyricProviders() []lyrics.Provider {
+	return []lyrics.Provider{
 		&local.Provider{
 			FileReader: &FileOpener{},
 			FileLister: &FileLister{Config},

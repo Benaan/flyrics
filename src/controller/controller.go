@@ -1,18 +1,16 @@
 package controller
 
 import (
+	"time"
+
 	"github.com/benaan/flyrics/src/lyrics"
 	"github.com/benaan/flyrics/src/model"
 	"github.com/benaan/flyrics/src/state"
 	"github.com/benaan/flyrics/src/view"
 )
 
-type lyricsManager interface {
-	GetLyrics(song *model.Song, output chan model.Lyrics)
-}
-
 type Controller struct {
-	LyricManager  lyricsManager
+	LyricManager  lyrics.LyricsManager
 	View          view.LyricView
 	State         *state.State
 	LyricInput    chan model.Lyrics
@@ -21,6 +19,7 @@ type Controller struct {
 }
 
 func (controller *Controller) Run() {
+	time.Sleep(100 * time.Millisecond) // todo add real fix - the first song is updated before the view is ready
 	for {
 		select {
 		case metadata := <-controller.MetadataInput:
@@ -41,9 +40,10 @@ func (controller *Controller) handleLyricChange(lyrics *model.Lyrics) {
 
 func (controller *Controller) handleMetadataChange(metadata *model.Metadata) {
 	if controller.State.GetSong() == nil || *controller.State.GetSong() != *metadata.Song {
+		controller.View.SetSong(metadata.Song)
 		controller.State.SetSong(metadata.Song)
 		controller.handleLyricChange(lyrics.EmptyLyrics)
-		go controller.LyricManager.GetLyrics(metadata.Song, controller.LyricInput)
+		go controller.LyricManager.GetLyrics(metadata.Song)
 	}
 	controller.State.SetStatus(metadata.Status)
 	controller.State.SetTime(metadata.Time)
