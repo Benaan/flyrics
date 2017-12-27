@@ -20,7 +20,20 @@ func filterFiles(list []*File) []*File {
 }
 
 func filterSong(song *model.Song, list []*File) []*File {
-	cleanedAlbum := util.ToMatchable(song.Album)
+	artist := util.ToMatchable(song.Artist)
+	title := util.ToMatchable(song.Title)
+	var files []*File
+	for _, file := range list {
+		if util.ToMatchable(file.Artist) == artist && util.ToMatchable(file.Title) == title {
+			files = append(files, file)
+		}
+	}
+
+	return filterOnAlbum(song.Album, files)
+}
+
+func filterOnAlbum(album string, list []*File) []*File {
+	cleanedAlbum := util.ToMatchable(album)
 	if cleanedAlbum == "" {
 		return list
 	}
@@ -34,7 +47,6 @@ func filterSong(song *model.Song, list []*File) []*File {
 	if len(files) > 0 {
 		return files
 	}
-
 	return list
 }
 

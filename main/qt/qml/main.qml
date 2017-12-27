@@ -4,7 +4,7 @@ import QtQuick.Controls 1.4
 
 ApplicationWindow {
     id: mainWindow
-    property bool locked: false
+    property bool locked: true
     flags:   locked ? Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint : Qt.Window
     visible: true
     title: "Flyrics"

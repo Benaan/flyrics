@@ -46,6 +46,8 @@ func (vl *ViewLyrics) GetList(song *model.Song) []*lyrics.File {
 		return list
 	}
 
+	files = filterFiles(files)
+
 	for _, file := range files {
 		list = append(list, &lyrics.File{
 			Song: &model.Song{
