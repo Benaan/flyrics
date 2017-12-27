@@ -34,9 +34,12 @@ func GetBestMatch(matches []*Match) (string, error) {
 	var bestMatch *Match
 
 	for _, match := range matches {
-		if bestMatch == nil || match.Certainty < bestMatch.Certainty {
+		if (bestMatch == nil || match.Certainty < bestMatch.Certainty) && match.Certainty > TITLE {
 			bestMatch = match
 		}
+	}
+	if bestMatch == nil {
+		return "", errors.New("No files found above threshold")
 	}
 	return bestMatch.Path, nil
 }

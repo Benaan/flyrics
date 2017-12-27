@@ -5,11 +5,11 @@ import QtQuick.Controls 1.4
 ApplicationWindow {
     id: mainWindow
     property bool locked: true
-    flags:   locked ? Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint : Qt.Window
+    flags:   locked ? Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.WA_TranslucentBackground : Qt.Window
     visible: true
     title: "Flyrics"
-    width: 300
-    height: 400
+    width: 400
+    height: 300
     color: locked ? "transparent" : "white"
 
     menuBar: MenuBar {

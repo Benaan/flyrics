@@ -26,6 +26,9 @@ func (p *Provider) GetLyrics(song *model.Song) (*model.Lyrics, error) {
 		return nil, err
 	}
 	bestMatch, err := filematcher.GetBestMatch(matches)
+	if err != nil {
+		return nil, err
+	}
 	return p.getLyricsFromFile(bestMatch)
 }
 

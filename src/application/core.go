@@ -23,7 +23,7 @@ func Run(view view.LyricView) {
 	view.SetLyricManager(lyricManager)
 
 	metadataManager := &metadata.Manager{
-		Delay:     1000 * time.Millisecond,
+		Delay:     200 * time.Millisecond,
 		Output:    metadataChannel,
 		Stop:      stopChannel,
 		Listeners: CreateMetadataListeners(),

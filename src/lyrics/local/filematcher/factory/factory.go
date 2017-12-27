@@ -9,9 +9,9 @@ func CreateMatchers() []filematcher.FileMatcher {
 	return []filematcher.FileMatcher{
 		&matcher.ArtistAlbumTitle{},
 		&matcher.ArtistTitle{},
-		//&matcher.Title{},
+		&matcher.Title{},
 		&matcher.ArtistAlbumTitleCleaned{},
 		&matcher.ArtistTitleCleaned{},
-		//&matcher.TitleCleaned{},
+		&matcher.TitleCleaned{},
 	}
 }
