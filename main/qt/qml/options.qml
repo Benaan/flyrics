@@ -8,7 +8,6 @@ Window{
     title: "Options"
     minimumWidth: 500
     minimumHeight: 300
-    flags: Qt.SubWindow
 
 
     GridLayout {

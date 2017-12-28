@@ -9,7 +9,6 @@ ApplicationWindow{
     title: "Options"
     minimumWidth: 800
     minimumHeight: 400
-    flags: Qt.SubWindow
     toolBar: ToolBar {
         RowLayout {
             id: rows
