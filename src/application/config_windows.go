@@ -6,7 +6,7 @@ import (
 )
 
 func setupPlatformSpecific() {
-	viper.AddConfigPath("~\\AppData\\Roaming\\Flyrics")
-	viper.SetDefault(config.LyricDirectory, "~\\AppData\\Roaming\\Google Play Music Desktop Player\\json_store\\playback.json")
-	viper.SetDefault(config.GpmdpPath, "~\\My Music\\Lyrics")
+	viper.AddConfigPath("$HOMEDRIVE$HOMEPATH\\AppData\\Roaming\\Flyrics")
+	viper.SetDefault(config.GpmdpPath, "$HOMEDRIVE$HOMEPATH\\AppData\\Roaming\\Google Play Music Desktop Player\\json_store\\playback.json")
+	viper.SetDefault(config.LyricDirectory, "$HOMEDRIVE$HOMEPATH\\Music\\Lyrics")
 }
