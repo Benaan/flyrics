@@ -1,6 +1,8 @@
 package application
 
 import (
+	"io/ioutil"
+
 	"github.com/spf13/viper"
 )
 
@@ -13,7 +15,7 @@ func NewManager() *Manager {
 	setupPlatformSpecific()
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(err)
+		ioutil.WriteFile("./config.yml", []byte{}, 0644)
 	}
 	return manager
 }
