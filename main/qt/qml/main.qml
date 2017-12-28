@@ -4,13 +4,13 @@ import QtQuick.Controls 1.4
 
 ApplicationWindow {
     id: mainWindow
-    property bool locked: true
+    property bool locked: false
     flags:   locked ? Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.WA_TranslucentBackground : Qt.Window
     visible: true
     title: "Flyrics"
     width: 400
     height: 300
-    color: locked ? "transparent" : "white"
+    color: "transparent"
 
     menuBar: MenuBar {
         __contentItem.scale: locked ? 0 : 1
