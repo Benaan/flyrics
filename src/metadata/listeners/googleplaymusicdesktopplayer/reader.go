@@ -14,7 +14,7 @@ type Reader struct {
 }
 
 func (l *Reader) GetMetadata() (*model.Metadata, error) {
-	file, err := l.Opener.Open(l.Config.GetStringConfig(os.ExpandEnv(config.GpmdpPath)))
+	file, err := l.Opener.Open(os.ExpandEnv(l.Config.GetStringConfig(config.GpmdpPath)))
 	if err != nil {
 		return nil, err
 	}
