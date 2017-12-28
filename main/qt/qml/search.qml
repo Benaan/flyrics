@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.3
 ApplicationWindow{
     id: searchWindow
 
-    title: "Options"
+    title: "Search"
     minimumWidth: 800
     minimumHeight: 400
     toolBar: ToolBar {
