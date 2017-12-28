@@ -1,7 +1,9 @@
 package viewlyrics
 
 import (
+	"bytes"
 	"io"
+	"io/ioutil"
 
 	"github.com/benaan/flyrics/src/lyrics"
 	"github.com/benaan/flyrics/src/lyrics/parser"
@@ -73,12 +75,16 @@ func (vl *ViewLyrics) getLyricsFromUrl(url string, song *model.Song) (*model.Lyr
 	if err != nil {
 		return nil, err
 	}
-	lrcs, err := parser.ParseLyrics(file)
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+	lrcs, err := parser.ParseLyrics(bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
 
-	vl.Writer.Write(song, file)
+	vl.Writer.Write(song, bytes.NewReader(data))
 	return lrcs, nil
 }
 

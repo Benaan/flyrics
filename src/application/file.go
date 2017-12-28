@@ -47,5 +47,8 @@ func (w *LyricWriter) Write(song *model.Song, file io.Reader) error {
 	if err != nil {
 		return err
 	}
+	if len(data) == 0 {
+		return errors.New("Empty lyric file")
+	}
 	return ioutil.WriteFile(path, data, 0644)
 }
