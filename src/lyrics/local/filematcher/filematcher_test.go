@@ -14,7 +14,7 @@ func TestReturnsErrorWhenNoMatches(t *testing.T) {
 func TestReturnsSinglePath(t *testing.T) {
 
 	path, err := GetBestMatch([]*Match{
-		{"path", TITLE},
+		{"path", ARTIST_ALBUM_TITLE},
 	})
 
 	if err != nil {
