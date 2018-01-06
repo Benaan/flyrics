@@ -36,7 +36,7 @@ func (v *View) SetLyricManager(manager lyrics.LyricsManager) {
 
 func (v *View) SetLyrics(lines model.Lines) {
 	if v.model != nil {
-		v.model.clearLines()
+		v.model.ClearLines()
 		for _, key := range getSortedKeys(lines) {
 			qtLine := NewLine(nil)
 			qtLine.SetLinetext(lines[key])
