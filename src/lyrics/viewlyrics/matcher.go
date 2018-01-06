@@ -63,5 +63,8 @@ func getBestMatch(song *model.Song, files []*File) (string, error) {
 	}
 	cleanedFiles := filterSong(song, lrcFiles)
 	sortFiles(cleanedFiles)
+	if len(cleanedFiles) == 0 {
+		return "", errors.New("No valid matches found")
+	}
 	return cleanedFiles[0].Link, nil
 }
