@@ -42,7 +42,7 @@ func (s *Search) searchLyrics(artist, album, title string) {
 	}
 	s.files = s.lyricManager.GetList(song)
 
-	s.LyricList().clear()
+	s.LyricList().Clear()
 	for _, file := range s.files {
 		lrc := NewLyric(nil)
 		lrc.SetAlbum(file.Song.Album)
